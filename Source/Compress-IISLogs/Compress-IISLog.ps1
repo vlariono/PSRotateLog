@@ -46,13 +46,8 @@ function Compress-IISLog
                     New-Item -Path "$containedDir" -ItemType directory|Out-Null
                 }
 
-                try
-                {
-
-                    Compress-File -InputFile $curFile -OutputFile "$containedDir\$($curFile.Name).gz"
-                    Remove-Item -Path $curFile
-                }
-                catch {throw $_}
+                Compress-File -InputFile $curFile -OutputFile "$containedDir\$($curFile.Name).gz"
+                Remove-Item -Path $curFile
             }
         }
     }

@@ -1,11 +1,10 @@
-try { Import-Module -Name InvokeBuild -ErrorAction Stop}
-catch { throw $_ }
-
 $ErrorActionPreference = 'Stop'
+
+Import-Module -Name InvokeBuild
 
 #region ModuleInfo
 $moduleName = "PSRotateLog"
-$moduleVersion = "1.1.6"
+$moduleVersion = "1.1.7"
 # endregion
 
 $moduleContent = @()

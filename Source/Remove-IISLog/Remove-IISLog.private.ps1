@@ -68,21 +68,17 @@ function Remove-IISLogSize
     $sortedList = [System.Collections.Generic.List`1[[System.Object, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]](Get-FileList -Path $Path|Sort-Object CreationTime)
     $folderSize = ($sortedList| Measure-Object -property length -sum).Sum
 
-    try
+    while ($folderSize -gt $Size)
     {
-        while ($folderSize -gt $Size)
-        {
 
-            $item = $sortedList[0]
+        $item = $sortedList[0]
 
-            Remove-Item -Path $item.FullName
-            $sortedList.RemoveAt(0)
+        Remove-Item -Path $item.FullName
+        $sortedList.RemoveAt(0)
 
-            $folderSize -= $item.Length
-            Write-Output $item
-        }
+        $folderSize -= $item.Length
+        Write-Output $item
     }
-    catch { throw $_ }
 }
 
 function Remove-IISLogCount
@@ -108,17 +104,13 @@ function Remove-IISLogCount
     #Number of files for removing
     $removeCount = $sortedList.Count - $KeepFiles
 
-    try
+    if ($removeCount -gt 0)
     {
-        if ($removeCount -gt 0)
-        {
-            $sortedList|Select-Object -First $removeCount|ForEach-Object {
-                Remove-Item -Path $_.FullName
-                Write-Output $_
-            }
+        $sortedList|Select-Object -First $removeCount|ForEach-Object {
+            Remove-Item -Path $_.FullName
+            Write-Output $_
         }
     }
-    catch { throw $_ }
 }
 
 function Remove-IISLogOlder
@@ -143,12 +135,8 @@ function Remove-IISLogOlder
     )
     #endregion
 
-    try
-    {
-        Get-FileList -Path $Path -ListEmptyFolders $RemoveEmptyFolders|Where-Object {$_.LastWriteTime -lt $Older}|ForEach-Object {
-            Remove-Item -Path $_.FullName
-            Write-Output $_
-        }
+    Get-FileList -Path $Path -ListEmptyFolders $RemoveEmptyFolders|Where-Object {$_.LastWriteTime -lt $Older}|ForEach-Object {
+        Remove-Item -Path $_.FullName
+        Write-Output $_
     }
-    catch { throw $_ }
 }
